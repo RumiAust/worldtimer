@@ -18,9 +18,10 @@ class _LoadingState extends State<Loading> {
   void setupWorldTime() async {
     WorldTime instance = WorldTime('Berlin', 'germany.png', 'Europe/Lisbon');
     await instance.getTime();
-    print(instance.time);
-    setState(() {
-      time = instance.time;
+    Navigator.pushReplacementNamed(context, '/home', arguments: {
+      'location': instance.location,
+      'flag': instance.flag,
+      'time': instance.time
     });
   }
   @override
@@ -32,8 +33,11 @@ class _LoadingState extends State<Loading> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(child: Text(time)),
+    return const Scaffold(
+      body: Padding(child: SafeArea(
+          child: Text('Loading')
+      ), padding: EdgeInsets.all(50.0),
+      ) 
     );
   }
 }
