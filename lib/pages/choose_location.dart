@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:worldtimer/services/world_time.dart';
 
 class ChooseLocation extends StatefulWidget {
   const ChooseLocation({Key? key}) : super(key: key);
@@ -9,6 +10,26 @@ class ChooseLocation extends StatefulWidget {
 
 class _ChooseLocationState extends State<ChooseLocation> {
   int counter =0;
+  List<WorldTime> locations = [
+    WorldTime('Berlin', 'germany.png', 'Europe/Berlin'),
+    WorldTime('London', 'uk.png', 'Europe/London'),
+    WorldTime('Greece', 'greece.png', 'Europe/Greece'),
+    WorldTime('Cairo',  'egypt.png', 'Africa/Cairo'),
+    WorldTime('Nairobi', 'kenya.png', 'Africa/Nairobi'),
+    WorldTime('New York', 'usa.png', 'America/New_York'),
+    WorldTime('Seoul', 'south_korea.png', 'Asia/Seoul'),
+    WorldTime('Jakarta', 'indonesia.png', 'Asia/Jakarta'),
+  ];
+
+  void updateTime(index) async {
+    WorldTime instance = locations[index];
+    await instance.getTime();
+    Navigator.pop(context, {
+      'location': instance.location,
+      'time': instance.time,
+      'flag': instance.flag,
+    });
+  }
 
   @override
   void initState() {
@@ -25,13 +46,27 @@ class _ChooseLocationState extends State<ChooseLocation> {
         centerTitle: true,
         elevation: 0,
       ),
-      body: ElevatedButton(
-        onPressed: (){
-          setState(() {
-            counter=counter+1;
-          });
-        }, child: Text('Counter is $counter'),
+      body: ListView.builder(
+          itemCount: locations.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 4.0),
+              child: Card(
+                child: ListTile(
+                  onTap: () {
+                    print(locations[index].location);
+                    updateTime(index);
+                  },
+                  title: Text(locations[index].location),
+                  leading: CircleAvatar(
+                    backgroundImage: AssetImage('assets/${locations[index].flag}'),
+                  ),
+                ),
+              ),
+            );
+          }
       ),
+
     );
   }
 }
